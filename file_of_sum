@@ -2,8 +2,8 @@ file_01.bin md5 95001faf518d1c5544cdb0417eaf3476
 
 file_02.bin md5 6dc2d05c8374293fe20bc4c22c236e2e
 
-file_03.bin md5 6dc2d05c8374293fe20bc4c22c236e2e
+file_03.bin  6dc2d05c8374293fe20bc4c22c236e2e
 
-file_04.txt sha1 1db2c5ca579c6537a9c8e4cccbafb41760d29e30
+file_04.txt sha224 1db2c5ca579c6537a9c8e4cccbafb41760d29e30
 
 

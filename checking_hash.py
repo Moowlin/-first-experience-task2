@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-"""Программа читает файл,содержащий имена файлов, алгоритм хэширования и соответсввующие им хэш-суммы, и проверяет
-целостность указанных файлов.
+"""Программа читает файл,содержащий имена файлов, алгоритм хэширования (один из MD5/SHA1/SHA256) и соответсввующие им
+хэш-суммы, и проверяет целостность указанных файлов.
 Пример вызова программы: <script.py> <path to the input file> <path to the directory containing files to check>"""
 
 # ---------------------------------------------------------------
@@ -16,12 +16,16 @@ import hashlib      # for to calculate hash sums
 import os           # for to connect paths and check if a file exists
 import sys          # for CLI Arguments
 
+Algoritms = ['md5', 'sha1', 'sha256']           # list of work algoritms
+
 # Check of command:
 if len(sys.argv) < 3:
-    print('Missing arguments: Usage is <script.py> <path to the input file> <path to the directory containing files to check>')
+    print('Missing arguments: '
+          'Usage is [script.py] [path to the input file] [path to the directory containing files to check]')
+    sys.exit()
 
-InputFile = sys.argv[1]         # get control file
-PathToCheckFile = sys.argv[2]   # get path to  check files
+InputFile = sys.argv[1]             # get control file
+PathToCheckFile = sys.argv[2]       # get path to check files
 
 # ============================================= FUNCTIONS =============================================================
 
@@ -42,7 +46,7 @@ def computation_hash(path_file, hashAlgorithm):
 
 def comparisonHashs(ControlHash, HashFile):
 
-    """Функция сравнения значений хэш-сумм"""
+    """Функция сравнения значений хэш-сумм."""
 
     if ControlHash == HashFile:
         return "OK"
@@ -56,16 +60,21 @@ with open(InputFile, 'r') as control_file:
     for line in control_file:
         if line.isspace():
             continue                                                        # skip blank lines
-        else:
+        elif len(line.strip().split()) == 3:
             line = line.strip().split()
             WorkFile = line[0]                                              # get file's name
             HashAlgorithm = line[1].lower()                                 # get algorithm's name
             HashFromControlFile = line[2]                                   # get hash value
             PathFile = os.path.join(PathToCheckFile, WorkFile)              # get full path of the file
 
-            if os.path.isfile(PathFile) == True:                            # checking for file existence
-                HashFile = computation_hash(PathFile, HashAlgorithm)        # calculate the hash
-                result = comparisonHashs(HashFromControlFile, HashFile)     # comparison hashs
-                print(f'{WorkFile} {result}')
+            if HashAlgorithm in Algoritms:
+                if os.path.isfile(PathFile) == True:                            # checking for file existence
+                    HashFile = computation_hash(PathFile, HashAlgorithm)        # calculate the hash
+                    result = comparisonHashs(HashFromControlFile, HashFile)     # comparison hashs
+                    print(f'{WorkFile} {result}')
+                else:
+                    print(f'{WorkFile} NOT FOUND')
             else:
-                print(f'{WorkFile} NOT FOUND')
+                print(f"{WorkFile} INCORRECT HASHING ALGORITHM")
+        else:
+            print(f'Missing arguments in line "{line.strip()}"')
